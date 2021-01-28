@@ -4,3 +4,9 @@
     bomb = 1,
     death = 2
 };
+
+public interface ICharacterStateAble
+{
+    void ChangeStateToBomber();
+    void ChangeStateToNormal();
+}

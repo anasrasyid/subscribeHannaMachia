@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, ICharacterStateAble
 {
     [SerializeField]
     private float speed;
@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
 
     private CharacterMovement movement;
 
-    // Start is called before the first frame update
     void Start()
     {
         movement = GetComponent<CharacterMovement>();
@@ -22,8 +21,23 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Get Input and Move Player
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
         movement.MoveToPoint(inputX, inputY, speed, state);
+    }
+
+    public void ChangeStateToBomber()
+    {
+        state = CharacterState.bomb;
+        
+        // Do Some Behaviuor
+    }
+
+    public void ChangeStateToNormal()
+    {
+        state = CharacterState.normal;
+
+        // Do Some Behaviuor
     }
 }
