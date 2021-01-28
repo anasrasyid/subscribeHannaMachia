@@ -16,11 +16,17 @@ public class CharacterMovement : MonoBehaviour
     {
         Vector3 move = new Vector3(x, y, 0);
 
-        animator.SetFloat("Vertical", move.y);
-        animator.SetFloat("Horizontal", move.x);
-        animator.SetFloat("Magnitude", move.magnitude);
-        animator.SetInteger("State", (int)state);
+        AnimateMove(move, state);
 
         transform.Translate(move * speed * Time.deltaTime);
+    }
+
+    public void AnimateMove(Vector3 velocity, CharacterState state = CharacterState.normal)
+    {
+        // Set Variabel in Animator
+        animator.SetFloat("Vertical", velocity.y);
+        animator.SetFloat("Horizontal", velocity.x);
+        animator.SetFloat("Magnitude", velocity.magnitude);
+        animator.SetInteger("State", (int)state);
     }
 }
