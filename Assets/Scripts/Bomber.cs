@@ -21,19 +21,20 @@ public class Bomber : MonoBehaviour
 
     void Start()
     {
-        // Setup Agent
+        movement = GetComponent<CharacterMovement>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = speed;
+    }
 
-        movement = GetComponent<CharacterMovement>();
+    private void FixedUpdate() {
         Invoke("FindShortestTarget", delayTime);
     }
 
     void Update()
     {
-        if (target)
+        if (target && agent)
         {
             // Update Target Position and Animate Move
             agent.SetDestination(target.position);
@@ -70,7 +71,6 @@ public class Bomber : MonoBehaviour
         }
 
         target = currentTarget;
-        agent.SetDestination(target.position);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -81,10 +81,11 @@ public class Bomber : MonoBehaviour
             if (collision.gameObject.CompareTag(tag))
             {
                 ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
-
+                Debug.Log(tag);
                 // Change other State and disable this game object
                 other.ChangeStateToBomber();
                 gameObject.SetActive(false);
+                agent = null;
                 break;
             }
         }
