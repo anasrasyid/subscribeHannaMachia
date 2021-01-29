@@ -9,4 +9,5 @@ public interface ICharacterStateAble
 {
     void ChangeStateToBomber();
     void ChangeStateToNormal();
+    CharacterState GetState();
 }
