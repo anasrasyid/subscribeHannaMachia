@@ -13,6 +13,9 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     private CharacterMovement movement;
 
+    [SerializeField] private bool isCanTouch = true;
+    [SerializeField] private float delay = 0.5f;
+
     void Start()
     {
         movement = GetComponent<CharacterMovement>();
@@ -27,11 +30,19 @@ public class Player : MonoBehaviour, ICharacterStateAble
         movement.MoveToPoint(inputX, inputY, speed, state);
     }
 
+    IEnumerator InvicibleTouch()
+    {
+        isCanTouch = false;
+        yield return new WaitForSeconds(delay);
+        isCanTouch = true;
+    }
+
     public void ChangeStateToBomber()
     {
         state = CharacterState.bomb;
-        
+
         // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     public void ChangeStateToNormal()
@@ -39,28 +50,25 @@ public class Player : MonoBehaviour, ICharacterStateAble
         state = CharacterState.normal;
 
         // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Bomber bomber = other.gameObject.GetComponent<Bomber>();
-        if (bomber)
+        ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();
+        if (otherState != null && isCanTouch)
         {
-            this.ChangeStateToBomber();
-        } else {
-            ICharacterStateAble state = other.gameObject.GetComponent<ICharacterStateAble>();
-            if (state != null) {
-                if (state.GetState() == CharacterState.bomb) {
-                    this.ChangeStateToBomber();
-                } else {
-                    if (this.state == CharacterState.bomb) {
-                        this.ChangeStateToNormal();
-                    }
-                }
+            if (otherState.GetState() == CharacterState.bomb)
+            {
+                this.ChangeStateToBomber();
+                otherState.ChangeStateToNormal();
+            }
+            else if (this.state == CharacterState.bomb)
+            {
+                this.ChangeStateToNormal();
+                otherState.ChangeStateToBomber();
             }
         }
-
-        Debug.Log(this.state);
     }
 
     public CharacterState GetState() {
