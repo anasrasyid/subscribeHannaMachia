@@ -7,8 +7,19 @@ public class CharacterMovement : MonoBehaviour
 {
     private Animator animator;
 
+    public CharacterSkin skin = default;
+
     void Awake()
     {
+        if(skin)
+            ChangeAnimator(skin.runtimeAnimator);
+        else
+            animator = GetComponent<Animator>();
+    }
+
+    public void ChangeAnimator(RuntimeAnimatorController runtimeAnimator)
+    {
+        GetComponent<Animator>().runtimeAnimatorController = runtimeAnimator;
         animator = GetComponent<Animator>();
     }
 
