@@ -41,29 +41,20 @@ public class Player : MonoBehaviour, ICharacterStateAble
         // Do Some Behaviuor
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        Bomber bomber = other.gameObject.GetComponent<Bomber>();
-        if (bomber)
-        {
-            this.ChangeStateToBomber();
-        } else {
-            ICharacterStateAble state = other.gameObject.GetComponent<ICharacterStateAble>();
-            if (state != null) {
-                if (state.GetState() == CharacterState.bomb) {
-                    this.ChangeStateToBomber();
-                } else {
-                    if (this.state == CharacterState.bomb) {
-                        this.ChangeStateToNormal();
-                    }
-                }
-            }
-        }
-
-        Debug.Log(this.state);
-    }
-
     public CharacterState GetState() {
         return this.state;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+       if (this.state == CharacterState.bomb) {
+            ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
+            Debug.Log(other.GetState());
+            // Change other State and disable this game object
+            other.ChangeStateToBomber();
+            this.ChangeStateToNormal();
+        }
+    }
+
+
 }
