@@ -13,6 +13,9 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     private CharacterMovement movement;
 
+    [SerializeField] private bool isCanTouch = true;
+    [SerializeField] private float delay = 0.5f;
+
     void Start()
     {
         movement = GetComponent<CharacterMovement>();
@@ -27,11 +30,19 @@ public class Player : MonoBehaviour, ICharacterStateAble
         movement.MoveToPoint(inputX, inputY, speed, state);
     }
 
+    IEnumerator InvicibleTouch()
+    {
+        isCanTouch = false;
+        yield return new WaitForSeconds(delay);
+        isCanTouch = true;
+    }
+
     public void ChangeStateToBomber()
     {
         state = CharacterState.bomb;
-        
+
         // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     public void ChangeStateToNormal()
@@ -39,6 +50,7 @@ public class Player : MonoBehaviour, ICharacterStateAble
         state = CharacterState.normal;
 
         // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     public CharacterState GetState() {
@@ -47,12 +59,19 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       if (this.state == CharacterState.bomb) {
-            ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
-            Debug.Log(other.GetState());
-            // Change other State and disable this game object
-            other.ChangeStateToBomber();
-            this.ChangeStateToNormal();
+        ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();
+        if (otherState != null && isCanTouch)
+        {
+            if (otherState.GetState() == CharacterState.bomb)
+            {
+                this.ChangeStateToBomber();
+                otherState.ChangeStateToNormal();
+            }
+            else if (this.state == CharacterState.bomb)
+            {
+                this.ChangeStateToNormal();
+                otherState.ChangeStateToBomber();
+            }
         }
     }
 

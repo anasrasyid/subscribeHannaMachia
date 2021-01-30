@@ -7,8 +7,27 @@ public class CharacterMovement : MonoBehaviour
 {
     private Animator animator;
 
+    [SerializeField] private CharacterSkin skin = default;
+
     void Awake()
     {
+        if(skin)
+            ChangeAnimator(skin);
+        else
+            animator = GetComponent<Animator>();
+    }
+
+    public void ChangeAnimator(CharacterSkin characterSkin)
+    {
+        skin = characterSkin;
+        GetComponent<Animator>().runtimeAnimatorController = skin.runtimeAnimator;
+        animator = GetComponent<Animator>();
+    }
+
+    public void ChangeAnimator(int id)
+    {
+        skin = PUNController.controller.playerSkins[id];
+        GetComponent<Animator>().runtimeAnimatorController = skin.runtimeAnimator;
         animator = GetComponent<Animator>();
     }
 
