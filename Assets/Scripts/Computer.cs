@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,7 +11,6 @@ public class Computer : MonoBehaviour, ICharacterStateAble
     [SerializeField]
     private string[] targetTags;
 
-
     [SerializeField]
     private float speed = 3;
 
@@ -23,8 +21,7 @@ public class Computer : MonoBehaviour, ICharacterStateAble
     private NavMeshAgent agent;
     private GameObject currBomber = null;
 
-    [SerializeField] private bool isCanTouch = true;
-    [SerializeField] private float delay = 0.5f;
+    [SerializeField] private BombBehavior bombBehavior;
 
     void Start()
     {
@@ -39,6 +36,13 @@ public class Computer : MonoBehaviour, ICharacterStateAble
 
     private void Update()
     {
+        if (state == CharacterState.death)
+        {
+            agent.Stop();
+            movement.AnimateDeath();
+            return;
+        }
+
         if (state == CharacterState.bomb)
         {
             FindShortestTarget();
@@ -81,6 +85,7 @@ public class Computer : MonoBehaviour, ICharacterStateAble
         }
 
         movement.AnimateMove(agent.velocity, state);
+        bombBehavior.Run(-Time.deltaTime, ref state);
     }
 
     void FindShortestTarget()
@@ -122,7 +127,7 @@ public class Computer : MonoBehaviour, ICharacterStateAble
     private void OnCollisionEnter2D(Collision2D collision)
     {
         ICharacterStateAble otherState = collision.gameObject.GetComponent<ICharacterStateAble>();
-        if (otherState != null && isCanTouch)
+        if (otherState != null && bombBehavior.isCanTouch)
         {
             if (otherState.GetState() == CharacterState.bomb)
             {
@@ -137,27 +142,15 @@ public class Computer : MonoBehaviour, ICharacterStateAble
         }
     }
 
-    IEnumerator InvicibleTouch()
-    {
-        isCanTouch = false;
-        yield return new WaitForSeconds(delay);
-        isCanTouch = true;
-    }
-
     public void ChangeStateToBomber()
     {
-        state = CharacterState.bomb;
-
-        // Do Some Behaviuor
-        StartCoroutine(InvicibleTouch());
+        bombBehavior.Active(OfflineManager.Manager.BombExplode, ref state, 
+            OfflineManager.Manager.delayTouch);
     }
 
     public void ChangeStateToNormal()
     {
-        state = CharacterState.normal;
-
-        // Do Some Behaviuor
-        StartCoroutine(InvicibleTouch());
+        bombBehavior.Deactive(ref state, OfflineManager.Manager.delayTouch);
     }
 
     public void GetBomber() {

@@ -8,6 +8,7 @@ public class CharacterMovement : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private CharacterSkin skin = default;
+    [SerializeField] private bool isAnimateDeath = false;
 
     void Awake()
     {
@@ -47,5 +48,21 @@ public class CharacterMovement : MonoBehaviour
         animator.SetFloat("Horizontal", velocity.x);
         animator.SetFloat("Magnitude", velocity.magnitude);
         animator.SetInteger("State", (int)state);
+    }
+
+    public void AnimateDeath(bool isPlayer = false)
+    {
+        if (isAnimateDeath)
+            return;
+        // Do Effect in here
+
+        if (isPlayer)
+            OfflineManager.Manager.GameOver();
+        else
+            OfflineManager.Manager.NextMatch();
+
+        isAnimateDeath = true;
+        float delayDestroy = 1f;
+        Destroy(gameObject, delayDestroy);
     }
 }

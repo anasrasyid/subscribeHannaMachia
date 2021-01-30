@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
@@ -13,8 +12,7 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     private CharacterMovement movement;
 
-    [SerializeField] private bool isCanTouch = true;
-    [SerializeField] private float delay = 0.5f;
+    [SerializeField] private BombBehavior bombBehavior;
 
     void Start()
     {
@@ -24,43 +22,37 @@ public class Player : MonoBehaviour, ICharacterStateAble
     // Update is called once per frame
     void Update()
     {
+        if (state == CharacterState.death)
+        {
+            movement.AnimateDeath();
+            return;
+        }
         // Get Input and Move Player
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
         movement.MoveToPoint(inputX, inputY, speed, state);
-    }
 
-    IEnumerator InvicibleTouch()
-    {
-        isCanTouch = false;
-        yield return new WaitForSeconds(delay);
-        isCanTouch = true;
-    }
-
-    public void ChangeStateToBomber()
-    {
-        state = CharacterState.bomb;
-
-        // Do Some Behaviuor
-        StartCoroutine(InvicibleTouch());
-    }
-
-    public void ChangeStateToNormal()
-    {
-        state = CharacterState.normal;
-
-        // Do Some Behaviuor
-        StartCoroutine(InvicibleTouch());
+        bombBehavior.Run(-Time.deltaTime, ref state);
     }
 
     public CharacterState GetState() {
         return this.state;
     }
 
+    public void ChangeStateToBomber()
+    {
+        bombBehavior.Active(OfflineManager.Manager.BombExplode, ref state, OfflineManager.Manager.delayTouch);
+    }
+
+    public void ChangeStateToNormal()
+    {
+        bombBehavior.Deactive(ref state, OfflineManager.Manager.delayTouch);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         ICharacterStateAble otherState = collision.gameObject.GetComponent<ICharacterStateAble>();
-        if (otherState != null && isCanTouch)
+        if (otherState != null && bombBehavior.isCanTouch)
         {
             if (otherState.GetState() == CharacterState.bomb)
             {
