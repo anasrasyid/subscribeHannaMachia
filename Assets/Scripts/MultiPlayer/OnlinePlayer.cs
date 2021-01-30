@@ -63,6 +63,17 @@ public class OnlinePlayer : Photon.MonoBehaviour, ICharacterStateAble
         StartCoroutine(InvicibleTouch());
     }
 
+    public void ChangeAnimator(int id)
+    {
+        photonView.RPC("ChangeAnimatorOnline", PhotonTargets.AllBuffered, id);
+    }
+
+    [PunRPC]
+    public void ChangeAnimatorOnline(int id)
+    {
+        movement.ChangeAnimator(id);
+    }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();

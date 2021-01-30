@@ -38,4 +38,5 @@ MonoBehaviour:
   - RequestForPickupItems
   - RequestForPickupTimes
   - ChangeState
+  - ChangeAnimatorOnline
   DisableAutoOpenWizard: 1

@@ -7,19 +7,27 @@ public class CharacterMovement : MonoBehaviour
 {
     private Animator animator;
 
-    public CharacterSkin skin = default;
+    [SerializeField] private CharacterSkin skin = default;
 
     void Awake()
     {
         if(skin)
-            ChangeAnimator(skin.runtimeAnimator);
+            ChangeAnimator(skin);
         else
             animator = GetComponent<Animator>();
     }
 
-    public void ChangeAnimator(RuntimeAnimatorController runtimeAnimator)
+    public void ChangeAnimator(CharacterSkin characterSkin)
     {
-        GetComponent<Animator>().runtimeAnimatorController = runtimeAnimator;
+        skin = characterSkin;
+        GetComponent<Animator>().runtimeAnimatorController = skin.runtimeAnimator;
+        animator = GetComponent<Animator>();
+    }
+
+    public void ChangeAnimator(int id)
+    {
+        skin = PUNController.controller.playerSkins[id];
+        GetComponent<Animator>().runtimeAnimatorController = skin.runtimeAnimator;
         animator = GetComponent<Animator>();
     }
 
