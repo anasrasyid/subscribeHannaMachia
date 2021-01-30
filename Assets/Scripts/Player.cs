@@ -53,7 +53,11 @@ public class Player : MonoBehaviour, ICharacterStateAble
         StartCoroutine(InvicibleTouch());
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    public CharacterState GetState() {
+        return this.state;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();
         if (otherState != null && isCanTouch)
@@ -71,7 +75,5 @@ public class Player : MonoBehaviour, ICharacterStateAble
         }
     }
 
-    public CharacterState GetState() {
-        return this.state;
-    }
+
 }

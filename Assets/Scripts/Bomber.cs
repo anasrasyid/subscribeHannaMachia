@@ -81,7 +81,6 @@ public class Bomber : MonoBehaviour
             if (collision.gameObject.CompareTag(tag))
             {
                 ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
-                Debug.Log(tag);
                 // Change other State and disable this game object
                 other.ChangeStateToBomber();
                 gameObject.SetActive(false);

@@ -19,12 +19,9 @@ public class Computer : MonoBehaviour, ICharacterStateAble
     [SerializeField]
     private CharacterState state = CharacterState.normal;
 
-    [SerializeField]
-    private float delayTime = 0;
-
-
     private CharacterMovement movement;
     private NavMeshAgent agent;
+    private GameObject currBomber = null;
 
     void Start()
     {
@@ -34,28 +31,53 @@ public class Computer : MonoBehaviour, ICharacterStateAble
         agent.updateUpAxis = false;
         agent.speed = speed;
 
+        GetBomber();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (state == CharacterState.bomb)
         {
-            Invoke("FindShortestTarget", delayTime);
-        }
-        else
-        {
-
-        }
-    }
-
-    void Update()
-    {
-        if (target && agent)
-        {
-            // Update Target Position and Animate Move
+            FindShortestTarget();
             agent.SetDestination(target.position);
-            movement.AnimateMove(agent.velocity);
         }
+        else if (currBomber)
+        {
+            RaycastHit2D[] hits;
+
+            Vector3 dir = Vector3.zero;
+            // Vector3 dest = this.transform.position + dir.normalized;
+            Vector3 dest = this.transform.position;
+            float randValue = Random.value;
+            if (randValue < 0.6f) {
+                dir = (this.transform.position - currBomber.transform.position);
+            } else {
+                dir.x += -currBomber.transform.position.x;
+                dir.y += -currBomber.transform.position.y;
+            }
+          
+            foreach (string tag in targetTags)
+            {
+                foreach (GameObject obj in GameObject.FindGameObjectsWithTag(tag))
+                {
+                    if (obj.transform.position != currBomber.transform.position) {
+                        float dist = Vector3.Distance(this.transform.position, obj.transform.position);
+                        float distToBomb = Vector3.Distance(currBomber.transform.position, obj.transform.position);
+                        if (dist < 5 && dist < distToBomb) {
+                            dir += (transform.position - obj.transform.position);
+                        }
+                    }
+                }
+            }
+
+            dest = dir;
+            Debug.DrawLine(transform.position, dest, Color.blue, 2.5f);
+            Debug.DrawLine(transform.position, currBomber.transform.position, Color.red, 2.5f);
+ 
+            agent.SetDestination(dest);
+        }
+
+        movement.AnimateMove(agent.velocity);
     }
 
     void FindShortestTarget()
@@ -72,7 +94,7 @@ public class Computer : MonoBehaviour, ICharacterStateAble
                 if (currentTarget)
                 {
                     // Compare current minimun distance with new distance
-                    if (newDist < dist)
+                    if (newDist < dist && newDist > 0)
                     {
                         currentTarget = obj.transform;
                         dist = newDist;
@@ -88,57 +110,58 @@ public class Computer : MonoBehaviour, ICharacterStateAble
         }
 
         target = currentTarget;
-        if (agent)
-        {
-            agent.SetDestination(target.position);
-        }
     }
 
+    void reset() {
+        target = null;
+    }
 
-
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Bomber bomber = other.gameObject.GetComponent<Bomber>();
-        if (bomber)
-        {
-            this.ChangeStateToBomber();
+       if (this.state == CharacterState.bomb) {
+            ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
+            Debug.Log(other.GetState());
+            // Change other State and disable this game object
+            other.ChangeStateToBomber();
+            this.ChangeStateToNormal();
         }
-        else
-        {
-            ICharacterStateAble state = other.gameObject.GetComponent<ICharacterStateAble>();
-            if (state != null)
-            {
-                if (state.GetState() == CharacterState.bomb)
-                {
-                    this.ChangeStateToBomber();
-                }
-                else
-                {
-                    if (this.state == CharacterState.bomb)
-                    {
-                        this.ChangeStateToNormal();
-                    }
-                }
-            }
-        }
-
-        Debug.Log("computer:" + this.state);
     }
 
 
 
     public void ChangeStateToBomber()
     {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.color = new Color (1, 0, 0, 1);  
         state = CharacterState.bomb;
-
-        // Do Some Behaviuor
+        GetBomber();
     }
 
     public void ChangeStateToNormal()
     {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.color = new Color (0, 1, 0, 1);  
         state = CharacterState.normal;
+        GetBomber();
+    }
 
-        // Do Some Behaviuor
+    public void GetBomber() {
+        GameObject bomber = GameObject.FindWithTag("Bomb");
+        if (bomber) {
+            currBomber = bomber;
+        } else {
+            foreach (string tag in targetTags)
+            {
+                foreach (GameObject obj in GameObject.FindGameObjectsWithTag(tag))
+                {
+                    ICharacterStateAble state = obj.GetComponent<ICharacterStateAble>();
+                    if (state.GetState() == CharacterState.bomb) {
+                        currBomber = obj;
+                    }
+                }
+            }
+
+        }
     }
 
     public CharacterState GetState()
