@@ -23,6 +23,9 @@ public class Computer : MonoBehaviour, ICharacterStateAble
     private NavMeshAgent agent;
     private GameObject currBomber = null;
 
+    [SerializeField] private bool isCanTouch = true;
+    [SerializeField] private float delay = 0.5f;
+
     void Start()
     {
         movement = GetComponent<CharacterMovement>();
@@ -77,7 +80,7 @@ public class Computer : MonoBehaviour, ICharacterStateAble
             agent.SetDestination(dest);
         }
 
-        movement.AnimateMove(agent.velocity);
+        movement.AnimateMove(agent.velocity, state);
     }
 
     void FindShortestTarget()
@@ -118,31 +121,43 @@ public class Computer : MonoBehaviour, ICharacterStateAble
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       if (this.state == CharacterState.bomb) {
-            ICharacterStateAble other = collision.gameObject.GetComponent<ICharacterStateAble>();
-            Debug.Log(other.GetState());
-            // Change other State and disable this game object
-            other.ChangeStateToBomber();
-            this.ChangeStateToNormal();
+        ICharacterStateAble otherState = collision.gameObject.GetComponent<ICharacterStateAble>();
+        if (otherState != null && isCanTouch)
+        {
+            if (otherState.GetState() == CharacterState.bomb)
+            {
+                this.ChangeStateToBomber();
+                otherState.ChangeStateToNormal();
+            }
+            else if (this.state == CharacterState.bomb)
+            {
+                this.ChangeStateToNormal();
+                otherState.ChangeStateToBomber();
+            }
         }
     }
 
-
+    IEnumerator InvicibleTouch()
+    {
+        isCanTouch = false;
+        yield return new WaitForSeconds(delay);
+        isCanTouch = true;
+    }
 
     public void ChangeStateToBomber()
     {
-        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        sprite.color = new Color (1, 0, 0, 1);  
         state = CharacterState.bomb;
-        GetBomber();
+
+        // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     public void ChangeStateToNormal()
     {
-        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        sprite.color = new Color (0, 1, 0, 1);  
         state = CharacterState.normal;
-        GetBomber();
+
+        // Do Some Behaviuor
+        StartCoroutine(InvicibleTouch());
     }
 
     public void GetBomber() {

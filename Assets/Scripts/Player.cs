@@ -59,7 +59,7 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();
+        ICharacterStateAble otherState = collision.gameObject.GetComponent<ICharacterStateAble>();
         if (otherState != null && isCanTouch)
         {
             if (otherState.GetState() == CharacterState.bomb)
@@ -74,6 +74,5 @@ public class Player : MonoBehaviour, ICharacterStateAble
             }
         }
     }
-
-
+    
 }
