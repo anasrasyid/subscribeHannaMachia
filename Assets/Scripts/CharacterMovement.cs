@@ -27,7 +27,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void ChangeAnimator(int id)
     {
-        skin = PUNController.controller.playerSkins[id];
+        skin = GameManager.Manager.playerSkins[id];
         GetComponent<Animator>().runtimeAnimatorController = skin.runtimeAnimator;
         animator = GetComponent<Animator>();
     }

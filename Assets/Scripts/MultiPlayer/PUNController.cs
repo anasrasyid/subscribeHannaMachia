@@ -17,7 +17,6 @@ public class PUNController : MonoBehaviour
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings(versionName);
-        controller = this;
     }
 
     void Start()
@@ -38,7 +37,7 @@ public class PUNController : MonoBehaviour
 
     public void ChangeUserName()
     {
-        if (usernameInput.text.Length >= 3)
+        if (usernameInput.text.Length >= 3 && PhotonNetwork.connectedAndReady)
         {
             startButton.SetActive(true);
         }
@@ -82,8 +81,7 @@ public class PUNController : MonoBehaviour
 
     [SerializeField] private GameObject playerPrefabs;
     [SerializeField] private Transform[] spwanPos;
-    [SerializeField] public CharacterSkin[] playerSkins;
-    public static PUNController controller { get; private set; }
+    
 
     public void SpawnPlayer()
     {

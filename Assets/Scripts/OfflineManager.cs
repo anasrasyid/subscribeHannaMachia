@@ -8,16 +8,12 @@ public class OfflineManager : MonoBehaviour
     [SerializeField] private GameObject computerPrefab;
     [SerializeField] private GameObject bomberPrefabs;
     [SerializeField] private Transform[] spawnPosition;
-    [SerializeField] private CharacterSkin[] skins;
 
     [SerializeField] private List<ICharacterStateAble> characters;
 
     private List<int> usedIndex = new List<int>();
     [SerializeField] private int maxPlayer = 4;
     [SerializeField] private int currentPlayer;
-
-    [SerializeField] public float BombExplode = 3;
-    [SerializeField] public float delayTouch = 0.5f;
 
     public static OfflineManager Manager { get; private set; }
 
@@ -32,13 +28,13 @@ public class OfflineManager : MonoBehaviour
 
         // Create Player
         var character = Instantiate(playerPrefab, spawnPosition[RandomIndexPos()].position, Quaternion.identity);
-        character.GetComponent<CharacterMovement>().ChangeAnimator(skins[0]);
+        character.GetComponent<CharacterMovement>().ChangeAnimator(GameManager.Manager.playerSkins[0]);
 
         // Create Computer
         for (int i = 1; i < maxPlayer; i++)
         {
             character = Instantiate(computerPrefab, spawnPosition[RandomIndexPos()].position, Quaternion.identity);
-            character.GetComponent<CharacterMovement>().ChangeAnimator(skins[i]);
+            character.GetComponent<CharacterMovement>().ChangeAnimator(GameManager.Manager.playerSkins[i]);
         }
 
         currentPlayer = maxPlayer;

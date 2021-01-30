@@ -12,10 +12,8 @@ public class OnlinePlayer : Photon.MonoBehaviour, ICharacterStateAble
 
     private CharacterMovement movement;
 
-    [SerializeField] private bool isCanTouch = true;
-    [SerializeField] private float delay = 0.5f;
-
     [SerializeField] private PhotonView photonView;
+    [SerializeField] private BombBehavior bombBehavior;
 
     private void Awake()
     {
@@ -32,35 +30,36 @@ public class OnlinePlayer : Photon.MonoBehaviour, ICharacterStateAble
             float inputY = Input.GetAxis("Vertical");
             movement.MoveToPoint(inputX, inputY, speed, state);
         }
+        photonView.RPC("UpdateTimer", PhotonTargets.AllBuffered, -Time.deltaTime);
     }
 
-    IEnumerator InvicibleTouch()
+    [PunRPC]
+    public void UpdateTimer(float time)
     {
-        isCanTouch = false;
-        yield return new WaitForSeconds(delay);
-        isCanTouch = true;
+        bombBehavior.Run(time, ref state);
     }
 
     public void ChangeStateToBomber()
     {
-        int idChar = PhotonNetwork.player.ID;
-        photonView.RPC("ChangeState", PhotonTargets.AllBuffered, CharacterState.bomb);
+        photonView.RPC("ChangeStateToBomberOnline", PhotonTargets.AllBuffered);
     }
     
     public void ChangeStateToNormal()
     {
-        int idChar = PhotonNetwork.player.ID;
-        photonView.RPC("ChangeState", PhotonTargets.AllBuffered, CharacterState.normal);
+        photonView.RPC("ChangeStateToNormalOnline", PhotonTargets.AllBuffered);
     }
 
     [PunRPC]
-    public void ChangeState(CharacterState characterState)
+    public void ChangeStateToBomberOnline()
     {
-        state = characterState;
-        movement.AnimateMove(Vector3.zero, state);
+        bombBehavior.Active(GameManager.Manager.BombExplode, ref state, 
+            GameManager.Manager.delayTouch);
+    }
 
-        // Do Some Behaviuor
-        StartCoroutine(InvicibleTouch());
+    [PunRPC]
+    public void ChangeStateToNormalOnline()
+    {
+        bombBehavior.Deactive(ref state, GameManager.Manager.delayTouch);
     }
 
     public void ChangeAnimator(int id)
@@ -77,7 +76,7 @@ public class OnlinePlayer : Photon.MonoBehaviour, ICharacterStateAble
     private void OnCollisionEnter2D(Collision2D other)
     {
         ICharacterStateAble otherState = other.gameObject.GetComponent<ICharacterStateAble>();
-        if (otherState != null && isCanTouch)
+        if (otherState != null && bombBehavior.isCanTouch)
         {
             if (otherState.GetState() == CharacterState.bomb)
             {

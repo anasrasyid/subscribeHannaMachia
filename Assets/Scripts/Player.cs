@@ -41,12 +41,12 @@ public class Player : MonoBehaviour, ICharacterStateAble
 
     public void ChangeStateToBomber()
     {
-        bombBehavior.Active(OfflineManager.Manager.BombExplode, ref state, OfflineManager.Manager.delayTouch);
+        bombBehavior.Active(GameManager.Manager.BombExplode, ref state, GameManager.Manager.delayTouch);
     }
 
     public void ChangeStateToNormal()
     {
-        bombBehavior.Deactive(ref state, OfflineManager.Manager.delayTouch);
+        bombBehavior.Deactive(ref state, GameManager.Manager.delayTouch);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
