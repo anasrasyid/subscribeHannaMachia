@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private CharacterSkin skin = default;
     [SerializeField] private bool isAnimateDeath = false;
+
+    public Action DeathFunction;
 
     void Awake()
     {
@@ -64,5 +67,18 @@ public class CharacterMovement : MonoBehaviour
         isAnimateDeath = true;
         float delayDestroy = 1f;
         Destroy(gameObject, delayDestroy);
+    }
+
+    public void AnimateDeathOnline()
+    {
+        if (isAnimateDeath)
+            return;
+        // Do Effect in here
+        DeathFunction();
+        isAnimateDeath = true;
+        float delayDestroy = 1f;
+        PUNController.Controller.GameOver();
+        gameObject.SetActive(false);
+        //Destroy(gameObject, delayDestroy);
     }
 }

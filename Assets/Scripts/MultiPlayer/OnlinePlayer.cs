@@ -23,6 +23,11 @@ public class OnlinePlayer : Photon.MonoBehaviour, ICharacterStateAble
     // Update is called once per frame
     void Update()
     {
+        if (state == CharacterState.death)
+        {
+            movement.AnimateDeathOnline();
+            return;
+        }
         if (photonView.isMine)
         {
             // Get Input and Move Player

@@ -42,4 +42,7 @@ MonoBehaviour:
   - ChangeStateToBomberOnline
   - ChangeStateToNormalOnline
   - UpdateTimer
+  - AddPlayer
+  - RemovePlayer
+  - SetPositionPlayer
   DisableAutoOpenWizard: 1
