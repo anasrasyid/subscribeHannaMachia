@@ -168,8 +168,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   state: 0
-  isCanTouch: 1
-  delay: 0.5
   bombBehavior: {fileID: 9198332539498384052}
 --- !u!114 &818184890138088907
 MonoBehaviour:
@@ -184,6 +182,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skin: {fileID: 0}
+  isAnimateDeath: 0
+  explosion: {fileID: 445885477542328590, guid: fb7d70bf5f558a340a7a4d5881c7cd40,
+    type: 3}
 --- !u!1 &8599933910426235510
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,3 +375,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   time: 0
   timeText: {fileID: 7236540024812803781}
+  isCanTouch: 1

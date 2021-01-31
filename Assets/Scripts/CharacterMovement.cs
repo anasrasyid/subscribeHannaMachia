@@ -11,6 +11,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private CharacterSkin skin = default;
     [SerializeField] private bool isAnimateDeath = false;
 
+    [SerializeField] private GameObject explosion;
+
     public Action DeathFunction;
 
     void Awake()
@@ -66,7 +68,10 @@ public class CharacterMovement : MonoBehaviour
 
         isAnimateDeath = true;
         float delayDestroy = 1f;
-        Destroy(gameObject, delayDestroy);
+        var pos = transform.position;
+        pos.z = -10;
+        Instantiate(explosion, pos,Quaternion.identity);
+        Destroy(gameObject);
     }
 
     public void AnimateDeathOnline()

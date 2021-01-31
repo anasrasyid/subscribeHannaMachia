@@ -139,7 +139,7 @@ public class PUNController : MonoBehaviour
             Debug.Log("You Win");
             PhotonNetwork.room.IsOpen = true;
             PhotonNetwork.room.IsVisible = true;
-
+            GameManager.Manager.GameOver();
         }
         else
         {

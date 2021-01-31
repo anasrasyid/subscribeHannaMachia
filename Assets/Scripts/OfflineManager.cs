@@ -59,7 +59,7 @@ public class OfflineManager : MonoBehaviour
         {
             Debug.Log("Game Wins");
             // Do Somethings in here
-
+            GameManager.Manager.GameOver();
             return;
         }
 
@@ -72,7 +72,7 @@ public class OfflineManager : MonoBehaviour
     {
         Debug.Log("Game Over");
         // Do Somethings in here
-
+        GameManager.Manager.GameOver();
     }
 
     public int RandomIndexPos()

@@ -24,7 +24,7 @@ public class Player : MonoBehaviour, ICharacterStateAble
     {
         if (state == CharacterState.death)
         {
-            movement.AnimateDeath();
+            movement.AnimateDeath(true);
             return;
         }
         // Get Input and Move Player
