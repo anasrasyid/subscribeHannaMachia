@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 8424827395683839112}
   - component: {fileID: 8424827395683839113}
   - component: {fileID: 8424827395683839114}
-  - component: {fileID: 8424827395683839115}
+  - component: {fileID: 5971052309958321827}
   m_Layer: 0
   m_Name: PlayerOnline
   m_TagString: Player
@@ -225,7 +225,7 @@ Transform:
   m_GameObject: {fileID: 8424827395683839106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.02, y: -2.71, z: 0}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 487831938149668181}
   m_Father: {fileID: 0}
@@ -270,7 +270,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5013781104867163832, guid: 787a143d344d4504aa4cd9d8e265fb3b,
+  m_Sprite: {fileID: 3898906492411476930, guid: ce4a647376b5cf645bcf8f70958ad4c7,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -316,18 +316,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.00458093, y: 0}
+  m_Offset: {x: -0.0108629465, y: -0.11949134}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.9142857, y: 0.9142857}
+    oldSize: {x: 3.5466666, y: 3.5466666}
     newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7585324, y: 0.9142857}
+  m_Size: {x: 1.3523638, y: 2.873168}
   m_EdgeRadius: 0
 --- !u!95 &8424827395683839116
 Animator:
@@ -339,7 +339,7 @@ Animator:
   m_GameObject: {fileID: 8424827395683839106}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6fdccff465a13f74bbb6cc3a56e563be, type: 2}
+  m_Controller: {fileID: 22100000, guid: 7778ac396e0e08e45b838ce4dbe75321, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -362,6 +362,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skin: {fileID: 11400000, guid: 3ebce3ba28412b641a9f423934093c7f, type: 2}
   isAnimateDeath: 0
+  explosion: {fileID: 445885477542328590, guid: fb7d70bf5f558a340a7a4d5881c7cd40,
+    type: 3}
 --- !u!114 &8424827395683839112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +402,7 @@ MonoBehaviour:
   ownershipTransfer: 0
   ObservedComponents:
   - {fileID: 8424827395683839114}
-  - {fileID: 8424827395683839115}
+  - {fileID: 5971052309958321827}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
@@ -484,7 +486,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!114 &8424827395683839115
+--- !u!114 &5971052309958321827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
